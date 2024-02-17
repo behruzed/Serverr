@@ -24,3 +24,35 @@ exports.signIn = async (req, res) => {
         }
     }
 }
+exports.signUp = async (req, res) => {
+    const { name, surname, email, password } = req.body
+    const user = await Ucer.findOne({ email })
+    if (!user) {
+        if (name && surname && email && password) {
+            try {
+                let hash = await bcrypt.hash(password, 10)
+                let student = new Ucer({
+                    name,
+                    surname,
+                    email,
+                    password: hash,
+                    status: 'talaba'
+                })
+                student.save()
+                    .then(data => {
+                        if (data) {
+                            console.log(data);
+                            res.json({ title: "Success", data: data })
+                        }
+                    })
+            } catch (e) {
+                res.json({ title: "Error", e })
+            }
+        }
+        else {
+            res.json({ title: "Barcha ma'lumotlarni kiriting!!!" })
+        }
+    } else if (user) {
+        res.json({ title: "Allaqachon ro'yhatdan o'tgansiz!" })
+    }
+}

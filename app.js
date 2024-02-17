@@ -8,8 +8,8 @@ require('dotenv').config()
 const app = express()
 
 // Connect to MongoDB
-// mongoose.connect(process.env.DB_global_link)
-mongoose.connect(process.env.DB_local_link)
+mongoose.connect(process.env.DB_global_link)
+// mongoose.connect(process.env.DB_local_link)
     .then(data => {
         if (data) {
             console.log("DB connected...");
