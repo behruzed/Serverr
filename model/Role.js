@@ -19,6 +19,10 @@ module.exports = model("ucer", new Schema({
         enum: ["superadmin", "admin", "talaba"],
         default: "talaba"
     },
+    university: {
+        type: String,
+        require: true
+    },
     info: {
         type: String
     }

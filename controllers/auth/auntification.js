@@ -25,18 +25,19 @@ exports.signIn = async (req, res) => {
     }
 }
 exports.signUp = async (req, res) => {
-    const { name, surname, email, password } = req.body
+    const { name, surname, email, password, university } = req.body
     const user = await Ucer.findOne({ email })
     if (!user) {
-        if (name && surname && email && password) {
+        if (name && surname && email && password && university) {
             try {
                 let hash = await bcrypt.hash(password, 10)
                 let student = new Ucer({
+                    status: 'talaba',
                     name,
                     surname,
                     email,
                     password: hash,
-                    status: 'talaba'
+                    university
                 })
                 student.save()
                     .then(data => {
