@@ -16,13 +16,17 @@ exports.signIn = async (req, res) => {
                 id: user.id,
                 status: user.status,
                 name: user.name,
-                surname: user.surname
+                surname: user.surname,
+                email: user.email,
+                university: user.university
             }
             let status = user.status
             let name = user.name
             let surname = user.surname
+            let email = user.email
+            let university = user.university
             const token = await jwt.sign(payload, "Key", { expiresIn: '1h' })
-            res.status(200).json({ title: "Success", message: "WELCOME your room", token, status, name, surname })
+            res.status(200).json({ title: "Success", message: "WELCOME your room", token, status, name, surname, email, university })
         }
     }
 }

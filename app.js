@@ -36,7 +36,7 @@ app.use('/auth', require('./routes/auth/auntification')) // correct
 // Information for teacher and student. Also get, get one, cretae, update, delete teacher or student
 // app.use('/admin', token, checkAdmin, require('./routes/path/admin')) // correct
 // app.use('/teachers', token, checkTeacher, require('./routes/path/teachers')) // correct
-// app.use('/students', token, checkStudent, require('./routes/path/students')) // correct
+app.use('/students', token, checkStudent, require('./routes/path/students')) // correct
 
 // Information for teacher groups
 // app.use('/groups', token, checkTeacher, require('./routes/path/groups')) // correct
