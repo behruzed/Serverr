@@ -42,10 +42,16 @@ exports.signUp = async (req, res) => {
                     university
                 })
                 student.save()
-                    .then(data => {
+                    .then(async (data) => {
                         if (data) {
-                            console.log(data);
-                            res.json({ title: "Success", data: data })
+                            let payload = {
+                                id: data._id,
+                                status: data.status,
+                                name: data.name,
+                                surname: data.surname
+                            }
+                            const token = await jwt.sign(payload, "Key", { expiresIn: '1h' })
+                            res.json({ title: "Success", data, token })
                         }
                     })
             } catch (e) {
