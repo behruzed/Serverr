@@ -34,12 +34,12 @@ app.use('/auth', require('./routes/auth/auntification')) // correct
 // app.use('/routeTeacher', token, checkTeacher, require('./routes/route/routeTeacher')) // correct
 
 // Information for teacher and student. Also get, get one, cretae, update, delete teacher or student
-// app.use('/admin', token, checkAdmin, require('./routes/path/admin')) // correct
-// app.use('/teachers', token, checkTeacher, require('./routes/path/teachers')) // correct
+app.use('/supadmin', token, checkAdmin, require('./routes/path/supadmin')) // correct
+app.use('/admin', token, checkTeacher, require('./routes/path/admin')) // correct
 app.use('/students', token, checkStudent, require('./routes/path/students')) // correct
 
 // Information for teacher groups
-// app.use('/groups', token, checkTeacher, require('./routes/path/groups')) // correct
+app.use('/groups', token, checkTeacher, require('./routes/path/groups')) // correct
 
 // Connect to port
 const PORT = process.env.PORT || 3001
