@@ -13,21 +13,21 @@ const {
 const router = Router()
 
 // http://localhost:3000/students/profilest
-// router.get('/profilest', profileSt)
+router.get('/profilest', profileSt)
 // http://localhost:3000/students/onescore
-// router.get('/onescore', oneScore)
+router.get('/onescore', oneScore)
 
 router.post('/password', editPass)
 
 // http://localhost:3000/students
-// router.get('/', index)
+router.get('/', index)
 // http://localhost:3000/students/id for student
-// router.get('/:id', show)
+router.get('/:id', show)
 // http://localhost:3000/students
-// router.post('/', create)
+router.post('/', create)
 // http://localhost:3000/students/id for student
-// router.put('/:id', edit)
+router.put('/:id', edit)
 // http://localhost:3000/students/id for student
-// router.delete('/:id', remove)
+router.delete('/:id', remove)
 
 module.exports = router
