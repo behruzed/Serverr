@@ -1,5 +1,5 @@
 exports.checkAdmin = async (req, res, next) => {
-    if (req.user.status === 'admin') {
+    if (req.user.status === 'superAdmin') {
         next()
     } else {
         res.json({ title: "Error: ", message: "No authorization on this route" })
@@ -7,7 +7,7 @@ exports.checkAdmin = async (req, res, next) => {
 }
 
 exports.checkStudent = async (req, res, next) => {
-    if (req.user.status === 'student' || req.user.status === 'admin') {
+    if (req.user.status === 'talaba' || req.user.status === 'superAdmin') {
         next()
     } else {
         res.json({ title: "Error: ", message: "No authorization on this route" })
@@ -15,7 +15,7 @@ exports.checkStudent = async (req, res, next) => {
 }
 
 exports.checkTeacher = async (req, res, next) => {
-    if (req.user.status === 'teacher' || req.user.status === 'admin') {
+    if (req.user.status === 'admin' || req.user.status === 'superAdmin') {
         next()
     } else {
         res.json({ title: "Error: ", message: "No authorization on this route" })

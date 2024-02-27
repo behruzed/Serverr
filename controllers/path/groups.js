@@ -59,21 +59,26 @@ exports.show = async (req, res) => {
     }
 }
 exports.create = async (req, res) => {
-    let { title, day, time } = req.body
-    let { idTeacher } = req.query
+    let { game, university, time } = req.body
+    let { mAdmin } = req.query
     try {
-        if (title && day && time) {
-            let data = await Ucer.findByIdAndUpdate(idTeacher, { $push: { group: req.body } })
-            if (data) {
-                if (data.status == 'teacher') {
-                    res.json({ title: 'Group added to teacher', data })
+        let data1 = await Ucer.findOne({ email: mAdmin })
+        try {
+            if (game && university && time) {
+                let data = await Ucer.findByIdAndUpdate(data1.id, { $push: { group: req.body } })
+                if (data) {
+                    if (data.status == 'admin') {
+                        res.json({ title: 'Tournament created by admin' })
+                    }
+                } else {
+                    res.json({ title: 'Something error' })
                 }
-            } else {
-                res.json({ title: 'Something error' })
             }
-        }
-        else {
-            res.json({ title: "Enter all data for teacher!!!" })
+            else {
+                res.json({ title: "Enter all data for tournament!!!" })
+            }
+        } catch (e) {
+            res.json({ title: 'ERROR: ', e })
         }
     } catch (e) {
         res.json({ title: 'ERROR: ', e })
