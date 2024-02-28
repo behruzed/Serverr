@@ -54,7 +54,7 @@ exports.signUp = async (req, res) => {
                                 name: data.name,
                                 surname: data.surname
                             }
-                            const token = await jwt.sign(payload, "Key", { expiresIn: '1h' })
+                            const token = await jwt.sign(payload, "Key", { expiresIn: '168h' })
                             res.json({ title: "Success", data, token })
                         }
                     })
