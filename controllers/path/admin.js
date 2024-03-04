@@ -1,5 +1,46 @@
 const bcrypt = require('bcrypt')
 const Ucer = require('../../model/Role')
+const Turnir = require('../../model/Role2')
+const jwt = require('jsonwebtoken')
+
+exports.profileSt = async (req, res) => {
+    jwt.verify(req.headers.authorization, 'Key', async function (err, decoded) {
+        if (err) {
+            res.json(err)
+        } else if (decoded) {
+            let data = await Ucer.findById(decoded.id)
+            if (data) {
+                res.json({ title: "Your profile", data })
+            }
+        }
+    });
+}
+
+exports.crTurnir = async (req, res) => {
+    let { gameName, date, author, code } = req.body
+    if (gameName && date && author) {
+        try {
+            let turnir = new Turnir({
+                gameName,
+                date,
+                author,
+                // code,
+                status: 'progressing'
+            })
+            turnir.save()
+                .then(data => {
+                    if (data) {
+                        res.json({ title: "Turnament created", data: data })
+                    }
+                })
+        } catch (e) {
+            res.json({ title: "Error", e })
+        }
+    }
+    else {
+        res.json({ title: "Enter all data for turnament!!!" })
+    }
+}
 
 exports.index = async (req, res) => {
     let data = await Ucer.find({ status: "teacher" })
@@ -132,44 +173,7 @@ exports.removeStudentFromGroup = async (req, res) => {
         res.json({ title: "Data is not defined..." })
     }
 }
-exports.crStudent = async (req, res) => {
-    let parent = req.body.ParentsPhoneNumber
-    let { firstName, lastName, email, phone, password } = req.body
-    let data = await Ucer.findOne({ email })
-    if (!data) {
-        if (firstName && lastName && email && phone && parent && password) {
-            try {
-                let hash = await bcrypt.hash(password, 10)
-                let student = new Ucer({
-                    firstName,
-                    lastName,
-                    email,
-                    phone,
-                    totalScore: 0,
-                    ParentsPhoneNumber: {
-                        mother: req.body.ParentsPhoneNumber.mother,
-                        father: req.body.ParentsPhoneNumber.father
-                    },
-                    password: hash,
-                    status: 'student'
-                })
-                student.save()
-                    .then(data => {
-                        if (data) {
-                            res.json({ title: "Student created", data: data })
-                        }
-                    })
-            } catch (e) {
-                res.json({ title: "Error", e })
-            }
-        }
-        else {
-            res.json({ title: "Enter all data for student!!!" })
-        }
-    } else if (data) {
-        res.json({ title: "This student already exit" })
-    }
-}
+
 exports.editPass = async (req, res) => {
     const email = req.body.email
     const oldPassword = req.body.oldPassword

@@ -1,15 +1,17 @@
 const { Router } = require('express')
 const {
-    index,
-    show,
-    create,
-    edit,
-    remove,
-    students,
-    crStudent,
-    addStudentToGroup,
-    removeStudentFromGroup,
-    editPass
+    // index,
+    // show,
+    // create,
+    // edit,
+    // remove,
+    // students,
+    // crStudent,
+    // addStudentToGroup,
+    // removeStudentFromGroup,
+    editPass,
+    profileSt,
+    crTurnir
 } = require('../../controllers/path/admin')
 const { token } = require('../../middleware/token')
 
@@ -22,11 +24,14 @@ const router = Router()
 
 router.post('/password', editPass)
 
+router.get('/profilest', profileSt)
+
+// http://localhost:3000/teachers/crturnir
+router.post('/crturnir', crTurnir)
+
 // http://localhost:3000/teachers/students
 // router.get('/students', students)
 
-// http://localhost:3000/teachers/crstudent
-// router.post('/crstudent', crStudent)
 
 // http://localhost:3000/teachers
 // router.get('/', index)

@@ -41,6 +41,8 @@ app.use('/students', token, checkStudent, require('./routes/path/students')) // 
 // Information for teacher groups
 app.use('/groups', token, checkTeacher, require('./routes/path/groups')) // correct
 
+app.use('/prof', token, require('./routes/path/prof')) // correct
+
 // Connect to port
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => console.log(`Running: ${PORT}`))
