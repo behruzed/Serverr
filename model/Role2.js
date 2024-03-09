@@ -15,7 +15,7 @@ module.exports = model("turnir", new Schema({
         enum: ["active", "nonactive", "progressing"],
         default: "progressing"
     },
-    code: Number,
+    code: String,
     university: String,
     info: {
         type: String
