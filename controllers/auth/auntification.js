@@ -31,6 +31,7 @@ exports.signIn = async (req, res) => {
     }
 }
 exports.signUp = async (req, res) => {
+    const randomNumber = Math.floor(Math.random() * 1000000);
     const { name, surname, email, password, university } = req.body
     const user = await Ucer.findOne({ email })
     if (!user) {
@@ -43,7 +44,8 @@ exports.signUp = async (req, res) => {
                     surname,
                     email,
                     password: hash,
-                    university
+                    university,
+                    randomNumber
                 })
                 student.save()
                     .then(async (data) => {

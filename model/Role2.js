@@ -5,7 +5,7 @@ const {
 
 module.exports = model("turnir", new Schema({
     gameName: String,
-    date: Number,
+    date: String,
     author: {
         type: String,
         require: true
@@ -16,6 +16,7 @@ module.exports = model("turnir", new Schema({
         default: "progressing"
     },
     code: Number,
+    university: String,
     info: {
         type: String
     }

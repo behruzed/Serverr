@@ -16,6 +16,24 @@ exports.profileSt = async (req, res) => {
     });
 }
 
+exports.crGroup = async (req, res) => {
+    let { university, author, name } = req.body
+    let { idAuthor } = req.query
+    if (university && author && name) {
+        let data = await Ucer.findByIdAndUpdate(idAuthor, { $push: { jamoa: req.body } })
+        if (data) {
+            if (data.status == 'admin') {
+                res.json({ title: 'Group added to author', data })
+            }
+        } else {
+            res.json({ title: 'Something error' })
+        }
+    }
+    else {
+        res.json({ title: "Enter all data for turnament!!!" })
+    }
+}
+
 exports.crTurnir = async (req, res) => {
     let { gameName, date, author, code } = req.body
     if (gameName && date && author) {
@@ -24,7 +42,7 @@ exports.crTurnir = async (req, res) => {
                 gameName,
                 date,
                 author,
-                // code,
+                code,
                 status: 'progressing'
             })
             turnir.save()
@@ -41,6 +59,8 @@ exports.crTurnir = async (req, res) => {
         res.json({ title: "Enter all data for turnament!!!" })
     }
 }
+
+// 
 
 exports.index = async (req, res) => {
     let data = await Ucer.find({ status: "teacher" })
@@ -115,12 +135,7 @@ exports.remove = async (req, res) => {
         res.json({ title: `${req.params.id} not found` });
     }
 }
-exports.students = async (req, res) => {
-    let data = await Ucer.find({ status: 'student' })
-    if (data) {
-        res.json({ title: "All students", data })
-    }
-}
+
 exports.addStudentToGroup = async (req, res) => {
     let { idTeacher, idGroup, idStudent } = req.body
     if (idTeacher && idGroup && idStudent) {
