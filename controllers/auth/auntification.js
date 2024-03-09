@@ -68,6 +68,6 @@ exports.signUp = async (req, res) => {
             res.json({ title: "Barcha ma'lumotlarni kiriting!!!" })
         }
     } else if (user) {
-        res.json({ title: "Allaqachon ro'yhatdan o'tgansiz!" })
+        res.json({ title: "Ushbu login bilan boshqa foydalanuvchi ro`yxatdan o`tgan. Boshqa login tanlang!" })
     }
 }
