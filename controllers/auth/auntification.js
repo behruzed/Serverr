@@ -25,7 +25,7 @@ exports.signIn = async (req, res) => {
             let surname = user.surname
             let email = user.email
             let university = user.university
-            const token = await jwt.sign(payload, "Key", { expiresIn: '1h' })
+            const token = await jwt.sign(payload, "Key", { expiresIn: '168h' }) //1xafta
             res.status(200).json({ title: "Success", message: "WELCOME your room", token, status, name, surname, email, university })
         }
     }
