@@ -18,6 +18,7 @@ exports.show = async (req, res) => {
         res.json({ title: "Special teacher", data })
     }
 }
+// 
 exports.create = async (req, res) => {
     let { firstName, lastName, email, subject, phone, password } = req.body
     let data = await Ucer.findOne({ email })
