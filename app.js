@@ -25,23 +25,21 @@ app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 
 // Get information for use
-app.use('/', require('./routes/index')) // correct
+app.use('/', require('./routes/index'))
 
-// SignIn
-app.use('/auth', require('./routes/auth/auntification')) // correct
+// SignIn and SignUp
+app.use('/auth', require('./routes/auth/auntification'))
 
 // Teacher panel
 // app.use('/routeTeacher', token, checkTeacher, require('./routes/route/routeTeacher')) // correct
 
-// Information for teacher and student. Also get, get one, cretae, update, delete teacher or student
-app.use('/supadmin', token, checkAdmin, require('./routes/path/supadmin')) // correct
-app.use('/admin', token, checkTeacher, require('./routes/path/admin')) // correct
-app.use('/students', token, checkStudent, require('./routes/path/students')) // correct
+app.use('/supadmin', token, checkAdmin, require('./routes/path/supadmin'))
+app.use('/admin', token, checkTeacher, require('./routes/path/admin'))
+app.use('/students', token, checkStudent, require('./routes/path/students'))
 
-// Information for teacher groups
-app.use('/groups', token, checkTeacher, require('./routes/path/groups')) // correct
+app.use('/groups', token, checkTeacher, require('./routes/path/groups'))
 
-app.use('/prof', token, require('./routes/path/prof')) // correct
+app.use('/prof', token, require('./routes/path/prof'))
 
 // Connect to port
 const PORT = process.env.PORT || 3001

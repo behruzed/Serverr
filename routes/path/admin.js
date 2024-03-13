@@ -10,11 +10,7 @@ const {
     // addStudentToGroup,
     // removeStudentFromGroup,
     editPass,
-    profileSt,
-    crGroup,
-    crTurnir,
 } = require('../../controllers/path/admin')
-const { token } = require('../../middleware/token')
 
 const router = Router()
 
@@ -24,12 +20,6 @@ const router = Router()
 // router.delete('/manage', removeStudentFromGroup)
 
 router.post('/password', editPass)
-
-router.get('/profilest', profileSt)
-
-router.post('/crGroup', crGroup)
-
-router.post('/crTurnir', crTurnir)
 
 
 // http://localhost:3000/teachers
