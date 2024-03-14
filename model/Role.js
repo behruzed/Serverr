@@ -11,7 +11,7 @@ module.exports = model("ucer", new Schema({
         require: true
     },
     jamoa: [],
-    message: [],
+    messages: [],
     students: [],
     idGroup: Number,
     randomNumber: Number,

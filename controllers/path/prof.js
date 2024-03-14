@@ -42,11 +42,22 @@ exports.sendMess = async (req, res) => {
     let { message, idGroup, idTeacher } = req.body
     let { idAuthor } = req.query
     if (message && idGroup && idTeacher) {
-        let data = await Ucer.findByIdAndUpdate(idAuthor, { $push: { message: req.body } })
-        if (data) {
-            res.json({ title: 'Message send to user', data })
-        } else {
-            res.json({ title: 'Something error' })
+        let data1 = await Ucer.findByIdAndUpdate(idAuthor)
+        let num = 0
+        for (let i = 0; i < data1.messages.length; i++) {
+            if (data1.messages[i].idGroup != idGroup) {
+                let data = await Ucer.findByIdAndUpdate(idAuthor, { $push: { messages: req.body } })
+                if (data) {
+                    res.json({ title: 'Message send to user', data })
+                } else {
+                    res.json({ title: 'Something error' })
+                }
+            } else {
+                num += 1
+            }
+        }
+        if (num >= 1) {
+            res.json({ title: 'Member already added to group' })
         }
     }
     else {
@@ -120,36 +131,23 @@ exports.addStudentToGroup = async (req, res) => {
                     },
                     {
                         $push: {
-                            "jamoa.$.members": idStudent
+                            "jamoa.$.members": { _id: idStudent }
                         }
                     })
                 res.json({ title: "Success", group })
 
-                // varyant 1
-
-                // let student = await Ucer.findById(idStudent)
-                // let arr = []
-                // for (let i = 0; i < student.message.length; i++) {
-                //     if (student.message[i].idGroup != idGroup) {
-                //         arr.push(student.message[i])
-                //     }
-                // }
-                // let data = await Ucer.findByIdAndUpdate(idStudent, { $push: { message: arr } })
-
-
-                // varyant 2
-                
-                // let message1 = await Ucer.findOneAndUpdate(
-                //     {
-                //         _id: idStudent,
-                //         "message.idGroup": idGroup
-                //     },
-                //     {
-                //         $pull: {
-                //             "message.$.idGroup": idGroup
-                //         }
-                //     })
-                // console.log(message1);
+                let message1 = await Ucer.findOneAndUpdate(
+                    {
+                        _id: idStudent
+                    },
+                    {
+                        $pull: {
+                            messages: {
+                                idGroup: idGroup
+                            }
+                        }
+                    }
+                );
             }
         }
     } else {
@@ -157,26 +155,89 @@ exports.addStudentToGroup = async (req, res) => {
     }
 }
 
+// exports.removeStudentFromGroup = async (req, res) => {
+//     let { idTeacher, idGroup, idStudent } = req.query
+//     if (idTeacher && idGroup && idStudent) {
+//         let teacher = await Ucer.find({ 'email': idTeacher })
+//         if (!teacher) {
+//             res.json({ title: "Creator not found..." })
+//         } else {
+//             console.log(teacher[0].jamoa[0].members[0]._id==idStudent);
+//             console.log(idStudent);
+//             let group = await Ucer.UpdateOne(
+//                 {
+//                     _id: teacher[0]._id,
+//                 },
+//                 {
+//                     $pull: {
+//                         'jamoa.$.members': {
+//                             _id: idStudent
+//                         }
+//                     }
+//                 }
+//                 );
+//             // console.log(group);
+
+//             res.json({ title: "Deleted" });
+//         }
+//     } else {
+//         res.json({ title: "Data is not defined..." })
+//     }
+// }
+
+
 exports.removeStudentFromGroup = async (req, res) => {
-    let { idTeacher, idGroup, idStudent } = req.query
+    const { idTeacher, idGroup, idStudent } = req.query;
+
     if (idTeacher && idGroup && idStudent) {
-        let teacher = await Ucer.findById(idTeacher)
-        if (!teacher) {
-            res.json({ title: "Teacher not found..." })
-        } else {
-            let group = await Ucer.findOneAndUpdate(
-                {
-                    _id: idTeacher,
-                    "group._id": idGroup
-                },
-                {
-                    $pull: {
-                        "group.$.students": idStudent
-                    }
-                })
-            res.json({ title: "Deleted" })
+        try {
+            const teacher = await Ucer.findOne({ 'email': idTeacher });
+
+            if (!teacher) {
+                return res.json({ title: 'Creator not found...' });
+            }
+
+            const group = teacher.jamoa.find((j) => j.idGroup.toString() === idGroup);
+
+            if (!group) {
+                return res.json({ title: 'Group not found...' });
+            }
+
+            const studentPosition = group.members.findIndex((m) => m._id.toString() === idStudent);
+
+            if (studentPosition === -1) {
+                return res.json({ title: 'Student not found...' });
+            }
+
+            group.members.splice(studentPosition, 1);
+            await teacher.save();
+
+            return res.json({ title: 'Deleted' });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ title: 'Internal Server Error' });
         }
     } else {
-        res.json({ title: "Data is not defined..." })
+        return res.json({ title: 'Data is not defined...' });
+    }
+};
+
+exports.showMem = async (req, res) => {
+    try {
+        const data = await Ucer.findById(req.params.id)
+        let arr = []
+        for (let i = 0; i < data.jamoa.length; i++) {
+            if (data.jamoa[i].idGroup == req.query.idGroup) {
+                arr.push(data.jamoa[i].members)
+            }
+        }
+        let arr1 = []
+        for (let i = 0; i < arr[0].length; i++) {
+            const newData = await Ucer.findById(arr[0][i])
+            arr1.push(newData)
+        }
+        res.json({ title: "Special group members", members: arr1 })
+    } catch (e) {
+        res.json({ title: "ERROR: ", e })
     }
 }
