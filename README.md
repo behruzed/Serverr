@@ -77,7 +77,7 @@ function Groups() {
     })
     if (res.data.message === "No authorization on this route" || res.data.message === "Token is not defined" || res.data.message === "Token wrong") {
       window.localStorage.clear()
-      window.location.replace('/home')
+      navigate('/home')
     }
     console.log(res);
     alert(res.data.title)
@@ -165,7 +165,7 @@ function Groups() {
       }
       if (res.data.message === "No authorization on this route" || res.data.message === "Token is not defined" || res.data.message === "Token wrong") {
         window.localStorage.clear()
-        window.location.replace('/home')
+        navigate('/home')
       }
     }
   };
