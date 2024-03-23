@@ -44,20 +44,30 @@ exports.sendMess = async (req, res) => {
     if (message && idGroup && idTeacher) {
         let data1 = await Ucer.findByIdAndUpdate(idAuthor)
         let num = 0
-        for (let i = 0; i < data1.messages.length; i++) {
-            if (data1.messages[i].idGroup != idGroup) {
-                let data = await Ucer.findByIdAndUpdate(idAuthor, { $push: { messages: req.body } })
-                if (data) {
-                    res.json({ title: 'Message send to user', data })
+        if (data1.messages.length) {
+            for (let i = 0; i < data1.messages.length; i++) {
+                if (data1.messages[i].idGroup != idGroup) {
+                    let data = await Ucer.findByIdAndUpdate(idAuthor, { $push: { messages: req.body } })
+                    if (data) {
+                        res.json({ title: 'Message send to user', data })
+                    } else {
+                        res.json({ title: 'Something error' })
+                    }
                 } else {
-                    res.json({ title: 'Something error' })
+                    num += 1
                 }
-            } else {
-                num += 1
+                console.log(num);
             }
-        }
-        if (num >= 1) {
-            res.json({ title: 'Member already added to group' })
+            if (num >= 1) {
+                res.json({ title: 'Member already added to group' })
+            }
+        } else {
+            let data = await Ucer.findByIdAndUpdate(idAuthor, { $push: { messages: req.body } })
+            if (data) {
+                res.json({ title: 'Message send to user', data })
+            } else {
+                res.json({ title: 'Something error' })
+            }
         }
     }
     else {
@@ -131,7 +141,7 @@ exports.addStudentToGroup = async (req, res) => {
                     },
                     {
                         $push: {
-                            "jamoa.$.members": { _id: idStudent }
+                            "jamoa.$.members": idStudent
                         }
                     })
                 res.json({ title: "Success", group })
@@ -155,72 +165,74 @@ exports.addStudentToGroup = async (req, res) => {
     }
 }
 
-// exports.removeStudentFromGroup = async (req, res) => {
-//     let { idTeacher, idGroup, idStudent } = req.query
-//     if (idTeacher && idGroup && idStudent) {
-//         let teacher = await Ucer.find({ 'email': idTeacher })
-//         if (!teacher) {
-//             res.json({ title: "Creator not found..." })
-//         } else {
-//             console.log(teacher[0].jamoa[0].members[0]._id==idStudent);
-//             console.log(idStudent);
-//             let group = await Ucer.UpdateOne(
-//                 {
-//                     _id: teacher[0]._id,
-//                 },
-//                 {
-//                     $pull: {
-//                         'jamoa.$.members': {
-//                             _id: idStudent
-//                         }
-//                     }
-//                 }
-//                 );
-//             // console.log(group);
-
-//             res.json({ title: "Deleted" });
-//         }
-//     } else {
-//         res.json({ title: "Data is not defined..." })
-//     }
-// }
-
-
 exports.removeStudentFromGroup = async (req, res) => {
-    const { idTeacher, idGroup, idStudent } = req.query;
-
+    let { idTeacher, idGroup, idStudent } = req.query
     if (idTeacher && idGroup && idStudent) {
-        try {
-            const teacher = await Ucer.findOne({ 'email': idTeacher });
+        let teacher = await Ucer.find({ 'email': idTeacher })
+        if (!teacher) {
+            res.json({ title: "Creator not found..." })
+        } else {
+            // console.log(teacher[0].jamoa[0].members[0]._id == idStudent);
+            // console.log(idStudent);
+            // let data = await Ucer.findByIdAndUpdate(teacher[0]._id)
+            // console.log(data);
+            // let data = await Ucer.findByIdAndUpdate(teacher[0]._id, { ...req.body })
 
-            if (!teacher) {
-                return res.json({ title: 'Creator not found...' });
-            }
+            let group = await Ucer.findOneAndUpdate(
+                {
+                    _id: teacher[0]._id,
+                    "jamoa.idGroup": idGroup
+                },
+                {
+                    $pull: {
+                        "jamoa.$.members": idStudent
+                    }
+                })
+            console.log(group);
 
-            const group = teacher.jamoa.find((j) => j.idGroup.toString() === idGroup);
-
-            if (!group) {
-                return res.json({ title: 'Group not found...' });
-            }
-
-            const studentPosition = group.members.findIndex((m) => m._id.toString() === idStudent);
-
-            if (studentPosition === -1) {
-                return res.json({ title: 'Student not found...' });
-            }
-
-            group.members.splice(studentPosition, 1);
-            await teacher.save();
-
-            return res.json({ title: 'Deleted' });
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ title: 'Internal Server Error' });
+            res.json({ title: "Deleted" });
         }
     } else {
-        return res.json({ title: 'Data is not defined...' });
+        res.json({ title: "Data is not defined..." })
     }
-};
+}
+
+
+// exports.removeStudentFromGroup = async (req, res) => {
+//     const { idTeacher, idGroup, idStudent } = req.query;
+
+//     if (idTeacher && idGroup && idStudent) {
+//         try {
+//             const teacher = await Ucer.findOne({ 'email': idTeacher });
+
+//             if (!teacher) {
+//                 return res.json({ title: 'Creator not found...' });
+//             }
+
+//             const group = teacher.jamoa.find((j) => j.idGroup.toString() === idGroup);
+
+//             if (!group) {
+//                 return res.json({ title: 'Group not found...' });
+//             }
+
+//             const studentPosition = group.members.findIndex((m) => m._id.toString() === idStudent);
+
+//             if (studentPosition === -1) {
+//                 return res.json({ title: 'Student not found...' });
+//             }
+
+//             group.members.splice(studentPosition, 1);
+//             await teacher.save();
+
+//             return res.json({ title: 'Deleted' });
+//         } catch (error) {
+//             console.error(error);
+//             return res.status(500).json({ title: 'Internal Server Error' });
+//         }
+//     } else {
+//         return res.json({ title: 'Data is not defined...' });
+//     }
+// };
 
 exports.showMem = async (req, res) => {
     try {
