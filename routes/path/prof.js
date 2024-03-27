@@ -9,6 +9,7 @@ const {
     addStudentToGroup,
     showMem,
     removeStudentFromGroup,
+    statis,
 } = require('../../controllers/path/prof')
 
 const router = Router()
@@ -40,5 +41,8 @@ router.delete('/delMem', removeStudentFromGroup)
 
 // http://localhost:3000/prof/group/members/id teacher?idGroup
 router.get('/group/members/:id', showMem)
+
+// http://localhost:3000/prof/statis
+router.get('/statis', statis)
 
 module.exports = router

@@ -253,3 +253,11 @@ exports.showMem = async (req, res) => {
         res.json({ title: "ERROR: ", e })
     }
 }
+
+exports.statis = async (req, res) => {
+    let data = await Ucer.find({ status: 'talaba' || 'admin' || 'superadmin' })
+    console.log(data);
+    if (data) {
+        res.json({ title: "All users", data })
+    }
+}
